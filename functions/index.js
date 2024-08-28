@@ -1,7 +1,7 @@
-import dotenv from 'dotenv';
-import functions from 'firebase-functions';
-import axios from 'axios';
-import { middleware, messagingApi } from '@line/bot-sdk';
+import dotenv from "dotenv";
+import functions from "firebase-functions";
+import axios from "axios";
+import { middleware, messagingApi } from "@line/bot-sdk";
 
 dotenv.config();
 
@@ -14,8 +14,8 @@ const { MessagingApiClient } = messagingApi;
 const lineClient = new MessagingApiClient(LINE_CONFIG);
 
 export const lineWebhook = functions.https.onRequest((req, res) => {
-    if (req.method !== 'POST') {
-        return res.status(405).send('Method Not Allowed');
+    if (req.method !== "POST") {
+        return res.status(405).send("Method Not Allowed");
     }
 
     return middleware(LINE_CONFIG)(req, res, async () => {
@@ -33,7 +33,7 @@ export const lineWebhook = functions.https.onRequest((req, res) => {
 });
 
 const handleEvent = async (event) => {
-    if (event.type !== 'message' || event.message.type !== 'text') {
+    if (event.type !== "message" || event.message.type !== "text") {
         return null;
     }
 
@@ -43,27 +43,27 @@ const handleEvent = async (event) => {
     try {
         await lineClient.replyMessage({
             replyToken: event.replyToken,
-            messages: [{ type: 'text', text: replyMessage }]
+            messages: [{ type: "text", text: replyMessage }],
         });
     } catch (error) {
         const errorMessage = error.response ? error.response.data : error.message;
         await lineClient.replyMessage({
             replyToken: event.replyToken,
-            messages: [{ type: 'text', text: 'Error sending message: ' + errorMessage }]
+            messages: [{ type: "text", text: "Error sending message: " + errorMessage }],
         });
     }
 };
 
 const getDefinition = async (word) => {
-    const header = `Word: ${word}.`;
+    const header = `💭Word: ${word}.`;
     try {
         const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
         const meanings = response.data[0].meanings;
-        const noun = meanings.find(e => e.partOfSpeech === 'noun');
-        const verb = meanings.find(e => e.partOfSpeech === 'verb');
+        const noun = meanings.find(e => e.partOfSpeech === "noun");
+        const verb = meanings.find(e => e.partOfSpeech === "verb");
 
-        return `${header}${noun ? '\n\n▪️ Noun: ' + noun.definitions[0].definition : ''}${verb ? '\n\n▪️ Verb: ' + verb.definitions[0].definition : ''}`;
+        return `${header}${noun ? "\n\n▪️Noun: " + noun.definitions[0].definition : ""}${verb ? "\n\n▪️Verb: " + verb.definitions[0].definition : ""}`;
     } catch (error) {
-        return `${header}❌ Sorry, I couldn\'t find the definition for that word.`;
+        return `${header}\n\n❌ Sorry, I couldn\'t find the definition for that word.`;
     }
 };

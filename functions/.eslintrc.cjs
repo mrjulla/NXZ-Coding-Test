@@ -4,6 +4,7 @@ module.exports = {
     node: true,
   },
   parserOptions: {
+    "sourceType": "module",
     "ecmaVersion": 2018,
   },
   extends: [
@@ -11,9 +12,14 @@ module.exports = {
     "google",
   ],
   rules: {
+    "indent": "off",
+    "max-len": "off",
+    "object-curly-spacing": [2, "always"],
+    "arrow-parens": "off",
+    "no-useless-escape": 0,
     "no-restricted-globals": ["error", "name", "length"],
     "prefer-arrow-callback": "error",
-    "quotes": ["error", "double", {"allowTemplateLiterals": true}],
+    "quotes": ["error", "double", { "allowTemplateLiterals": true }],
   },
   overrides: [
     {
