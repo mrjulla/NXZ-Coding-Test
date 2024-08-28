@@ -55,14 +55,14 @@ const handleEvent = async (event) => {
 };
 
 const getDefinition = async (word) => {
-    const header = `Word: ${word}.\n\n`;
+    const header = `Word: ${word}.`;
     try {
         const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
         const meanings = response.data[0].meanings;
         const noun = meanings.find(e => e.partOfSpeech === 'noun');
         const verb = meanings.find(e => e.partOfSpeech === 'verb');
 
-        return `${header}${noun ? '▪️ Noun: ' + noun.definitions[0].definition : ''}${verb ? '\n\n▪️ Verb: ' + verb.definitions[0].definition : ''}`;
+        return `${header}${noun ? '\n\n▪️ Noun: ' + noun.definitions[0].definition : ''}${verb ? '\n\n▪️ Verb: ' + verb.definitions[0].definition : ''}`;
     } catch (error) {
         return `${header}❌ Sorry, I couldn\'t find the definition for that word.`;
     }
